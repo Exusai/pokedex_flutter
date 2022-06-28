@@ -21,15 +21,14 @@ class _PokedexViewState extends State<PokedexView> {
             child: CircularProgressIndicator(),
           );
         } else if (state is PokemonLoaded) {
-          return Expanded(
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: GridView.builder(
               shrinkWrap: true,
               itemCount: state.pokemonListings.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                childAspectRatio: 1.5,
               ), 
               itemBuilder: (BuildContext context, int index) { 
                 //print(pokemonList[index].name);

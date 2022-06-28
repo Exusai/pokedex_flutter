@@ -14,6 +14,7 @@ class PokemonListing{
       imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png',
     );
   }
+
 }
 class PokemonPageResponse {
   final List<PokemonListing> pokemonListings;

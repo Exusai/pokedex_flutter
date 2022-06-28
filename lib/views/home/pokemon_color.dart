@@ -1,4 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class PokeFetchTile {
+  Color color;
+  List<String> types;
+
+  PokeFetchTile({required this.color, required this.types});
+}
 
 Color pokemonTypeBackGround(String type) { 
   // change color depending on type
@@ -23,4 +33,25 @@ Color pokemonTypeBackGround(String type) {
   Colors.grey;
   
   return bg;
+}
+
+Future<PokeFetchTile> fetchPokemonColor(String name) async {
+  http.Client httpClient = http.Client();
+  final uri = Uri.https('pokeapi.co', '/api/v2/pokemon/$name');
+  http.Response response = await httpClient.get(uri);
+
+  Color colorToReturn = Colors.grey;
+  List<String> types = [];
+  if (response.statusCode == 200) {
+    var json = jsonDecode(response.body);
+    for (var i = 0; i < json['types'].length; i++) {
+      types.add(json['types'][i]['type']['name']);
+    } 
+    colorToReturn = pokemonTypeBackGround(json['types'][0]['type']['name'].toString());
+  } else {
+    throw Exception('Failed to load pokemon color');
+  }
+
+  PokeFetchTile pokeFetchTile = PokeFetchTile(color: colorToReturn, types: types);
+  return pokeFetchTile;
 }

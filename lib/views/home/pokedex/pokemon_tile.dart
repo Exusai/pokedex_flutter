@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex_flutter/blocs/nav_cubit.dart';
+import 'package:pokedex_flutter/blocs/pokemon_detail_cubit.dart';
 import 'package:pokedex_flutter/models/pokemon_response.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex_flutter/views/home/pokedex/pokemon_detail.dart';
+import '../../../models/pokemon.dart';
 import '../pokemon_color.dart';
 
 class PokemonTile extends StatelessWidget {
@@ -11,11 +15,13 @@ class PokemonTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        BlocProvider.of<NavCubit>(context).showPokemonDetails(pokemonListing.id, pokemonListing.name, pokemonListing.imageUrl);
+
         /* Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PokemonDetail(pokemon: pokemon),
+            builder: (context) => PokemonDetailView(),
           ),
         ); */
       },

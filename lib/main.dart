@@ -36,8 +36,17 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.red,
-          //brightness: Brightness.dark
+          dividerColor: Colors.grey,
+          sliderTheme: const SliderThemeData(
+            trackHeight: 10,
+            inactiveTrackColor: Colors.black12,
+            //trackShape: RectangularSliderTrackShape(),
+            thumbShape: RoundSliderThumbShape(elevation: 0, pressedElevation: 0),
+            overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
+            //thumbColor: Colors.transparent,
+          ),
         ),
+        
         home: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is UserInitial){
@@ -59,29 +68,6 @@ class MyApp extends StatelessWidget {
             }
           }, 
         ),
-        
-        /* Scaffold(
-          appBar: AppBar(
-            title: const Text('Flutter pokedex'),
-            elevation: 0,
-          ),
-          body: 
-          bottomNavigationBar: BottomAppBar(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.home),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ), */
       ),
     );
   }

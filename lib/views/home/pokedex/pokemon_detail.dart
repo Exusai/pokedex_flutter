@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex_flutter/blocs/nav_cubit.dart';
 import 'package:pokedex_flutter/blocs/pokemon_detail_cubit.dart';

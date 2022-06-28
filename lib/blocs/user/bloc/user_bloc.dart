@@ -42,5 +42,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
     );
+
+    on<DeleteUser>(
+      (event, emit) async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.remove('username');
+        emit(NoUser());
+      }
+    );
   }
 }

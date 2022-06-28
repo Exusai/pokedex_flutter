@@ -27,3 +27,12 @@ class UpdateUser extends UserEvent {
   @override
   List<Object> get props => [user];
 }
+
+class DeleteUser extends UserEvent {
+  final User user;
+
+  const DeleteUser(this.user);
+
+  @override
+  List<Object> get props => [user];
+}

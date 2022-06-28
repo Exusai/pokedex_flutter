@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex_flutter/blocs/nav_cubit.dart';
-import 'package:pokedex_flutter/blocs/pokemon_detail_cubit.dart';
 import 'package:pokedex_flutter/models/pokemon_response.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokedex_flutter/views/home/pokedex/pokemon_detail.dart';
-import '../../../models/pokemon.dart';
 import '../pokemon_color.dart';
 
 class PokemonTile extends StatelessWidget {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex_flutter/models/user.dart';
 import 'package:pokedex_flutter/views/home/pokedex/pokemon_tile.dart';
 
+import '../../../blocs/bottom_nav_bar_cubit.dart';
 import '../../../blocs/pokemon/bloc/pokemon_bloc.dart';
 import '../../../blocs/user/bloc/user_bloc.dart';
 
@@ -13,9 +15,12 @@ class PokedexView extends StatefulWidget {
 }
 
 class _PokedexViewState extends State<PokedexView> {
+  final _formkey = GlobalKey<FormState>();
+  String newUser = '';
+  int bootomBarIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter Pokedex'),
@@ -48,7 +53,9 @@ class _PokedexViewState extends State<PokedexView> {
                         fontSize: 15,
                       ),
                     ),
-                    const Divider(color: Colors.white,),
+                    const Divider(
+                      color: Colors.white,
+                    ),
                     BlocBuilder<UserBloc, UserState>(
                       builder: (context, state) {
                         if (state is UserLoaded) {
@@ -70,23 +77,31 @@ class _PokedexViewState extends State<PokedexView> {
             ),
             ListTile(
               title: const Text('Pokedex'),
+              dense: true,
               onTap: () {
+                BlocProvider.of<BottomNavCubit>(context).goToPokedex();
+                setState(() {});
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Equipos'),
+              dense: true,
               onTap: () {
+                BlocProvider.of<BottomNavCubit>(context).goToTeams();
+                setState(() {});
                 Navigator.pop(context);
               },
             ),
             ListTile(
+              dense: true,
               title: const Text('Editar usuario'),
               onTap: () {
-                Navigator.pop(context);
+                usernameChangeDialog();
               },
             ),
             ListTile(
+              dense: true,
               title: const Text('Borrar usuario'),
               onTap: () {
                 // Obtener info de usuario, si "inició sesión", borrar
@@ -99,40 +114,120 @@ class _PokedexViewState extends State<PokedexView> {
           ],
         ),
       ),
-      body: BlocBuilder<PokemonBloc, PokemonState>(
+      body: BlocBuilder<BottomNavCubit, int>(
         builder: (context, state) {
-          if (state is PokemonLoading){
-            return const Center(
-              child: CircularProgressIndicator(),
+          // if bottom nav is in pokedex (index 0)
+          if (state == 0) {
+            return BlocBuilder<PokemonBloc, PokemonState>(
+              builder: (context, state) {
+                if (state is PokemonLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is PokemonLoaded) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.pokemonListings.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1.5,
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          //print(pokemonList[index].name);
+                          return PokemonTile(
+                              pokemonListing: state.pokemonListings[index]);
+                        }),
+                  );
+                } else if (state is PokemonLoadFailed) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Error: ${state.error}'),
+                  );
+                } else {
+                  return const Center(
+                    child: Text('Unknown state'),
+                  );
+                }
+              },
             );
-          } else if (state is PokemonLoaded) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: state.pokemonListings.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.5,
-                ), 
-                itemBuilder: (BuildContext context, int index) { 
-                  //print(pokemonList[index].name);
-                  return PokemonTile(pokemonListing: state.pokemonListings[index]);
-                }),
-            );
-          } else if (state is PokemonLoadFailed) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Error: ${state.error}'),
-            );
-          }
-          else {
+          } else if (state == 1) {
+            // if bottom nav is in teams (index 1)
+            return Container();
+          } else {
             return const Center(
               child: Text('Unknown state'),
             );
+          }
+          
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            label: 'Pokedex',
+            icon: Icon(
+              Icons.tablet
+            ),
+          ),
+          BottomNavigationBarItem(
+            label: 'Equipos',
+            icon: Icon(Icons.sports_esports),
+          ),
+        ],
+        currentIndex: BlocProvider.of<BottomNavCubit>(context).state,
+        selectedItemColor: Colors.red,
+        onTap: (int index) {
+          if (index == 0) {
+            setState(() {});
+            BlocProvider.of<BottomNavCubit>(context).goToPokedex();
+          } else if (index == 1) {
+            setState(() {});
+            BlocProvider.of<BottomNavCubit>(context).goToTeams();
           }
         },
       ),
     );
   }
+
+  Future usernameChangeDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Cambiar nombre de usuario'),
+          content: Form(
+            key: _formkey,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                labelText: 'Nuevo nombre de usuario',
+              ),
+              validator: (val) =>
+                  val!.isEmpty ? 'Ingresar un nombre de usuario' : null,
+              onChanged: (value) {
+                newUser = value;
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Aceptar'),
+              onPressed: () {
+                if (_formkey.currentState!.validate()) {
+                  context
+                      .read<UserBloc>()
+                      .add(UpdateUser(User(username: newUser)));
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
+      );
 }

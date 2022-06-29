@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex_flutter/app_navigtion.dart';
+import 'package:pokedex_flutter/blocs/bottom_nav_bar_cubit.dart';
 import 'package:pokedex_flutter/blocs/nav_cubit.dart';
 import 'package:pokedex_flutter/blocs/pokemon/bloc/pokemon_bloc.dart';
 import 'package:pokedex_flutter/blocs/pokemon_detail_cubit.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
           create: (context) => NavCubit(pokemonDetailsCubit: pokemonDetailsCubit),
         ),
         BlocProvider(create: (context) => pokemonDetailsCubit),
+        BlocProvider(create: (context) => BottomNavCubit()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -46,7 +48,7 @@ class MyApp extends StatelessWidget {
             //thumbColor: Colors.transparent,
           ),
         ),
-        
+
         home: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is UserInitial){

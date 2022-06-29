@@ -9,6 +9,8 @@ import 'package:pokedex_flutter/blocs/teams/bloc/teams_bloc.dart';
 import 'package:pokedex_flutter/blocs/user/bloc/user_bloc.dart';
 import 'package:pokedex_flutter/views/auth/register.dart';
 
+import 'blocs/selected_team_cubit.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => pokemonDetailsCubit),
         BlocProvider(create: (context) => BottomNavCubit()),
         BlocProvider(create: (context) => TeamsBloc()..add(LoadTeams())),
+        BlocProvider(create: (context) => SlectedTeamCubit()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

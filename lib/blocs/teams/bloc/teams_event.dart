@@ -12,3 +12,11 @@ class DeleteTeam extends TeamsEvent {
     required this.teamName,
   });
 }
+
+class AddTeam extends TeamsEvent {
+  final String teamName;
+
+  AddTeam({
+    required this.teamName,
+  });
+}

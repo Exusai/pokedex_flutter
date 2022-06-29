@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex_flutter/blocs/teams/bloc/teams_bloc.dart';
 import 'package:pokedex_flutter/models/user.dart';
 import 'package:pokedex_flutter/views/home/pokedex/pokedex_view.dart';
 import '../../../blocs/bottom_nav_bar_cubit.dart';
 import '../../../blocs/user/bloc/user_bloc.dart';
+import '../../blocs/selected_team_cubit.dart';
 
 class PokedexView extends StatefulWidget {
   const PokedexView({Key? key}) : super(key: key);
@@ -14,7 +16,9 @@ class PokedexView extends StatefulWidget {
 
 class _PokedexViewState extends State<PokedexView> {
   final _formkey = GlobalKey<FormState>();
+  final _formkey2 = GlobalKey<FormState>();
   String newUser = '';
+  String newTeamName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -149,63 +153,60 @@ class _PokedexViewState extends State<PokedexView> {
     );
   }
 
-  Future teamToAddpokemonsTo() async {
-    switch (await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('Seleccione un equipo para añadir nuevos pokemones'),
-          
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () { 
+  Future teamToAddpokemonsTo() => showDialog(
+    context: context, 
+    builder: (context) => SimpleDialog(
+      title: const Text('Seleccione un equipo para añadir nuevos pokemones'),
+      children: <Widget>[
+        BlocBuilder<TeamsBloc, TeamsState>(
+          builder: (context, state) {
+            if (state is TeamsLoaded) {
+              return Column(
+                children: state.teams.map((team) => ListTile(
+                title: Text(team),
+                onTap: () {
+                  BlocProvider.of<SlectedTeamCubit>(context).selectTeam(team);
+                },
+              )).toList()
+              );
+            } else if (state is TeamsLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is NoTeamsLoaded) {
+              return const Center(
+                child: Text('No hay equipos', style: TextStyle(fontSize: 20)),
+              );
+            } else {
+              return const Center(
+                child: Text('Error'),
+              );
+            }
+          },
+        ),
+        TextButton(
+          onPressed: () {
+            newTeam();
+          }, 
+          child: const Text('Nuevo equipo'),
+        ),
 
-              },
-              child: const Text('Treasury department'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-
-              },
-              child: const Text('State department'),
-            ),
-            
-            TextButton(
-              onPressed: () {
-                newTeam();
-              }, 
-              child: const Text('Nuevo equipo'),
-            ),
-
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, 0);
-              }, 
-              child: const Text('Cancelar')
-            ),
-          ],
-        );
-      }
-    )) {
-      case 0:
-        // Let's go.
-        // ...
-      break;
-      case 1:
-        // ...
-      break;
-      case null:
-        // dialog dismissed
-      break;
-    }
-  }
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, 0);
+          }, 
+          child: const Text('Cancelar')
+        ),
+      ],
+    )
+  );
 
   Future newTeam() => showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: const Text('Nuevo equipo'),
       content: Form(
-        key: _formkey,
+        key: _formkey2,
         child: TextFormField(
           decoration: const InputDecoration(
             labelText: 'Nombre del equipo',
@@ -213,7 +214,7 @@ class _PokedexViewState extends State<PokedexView> {
           validator: (val) =>
               val!.isEmpty ? 'Ingresar un nombre de equpo' : null,
           onChanged: (value) {
-            newUser = value;
+            newTeamName = value;
           },
         ),
       ),
@@ -227,9 +228,10 @@ class _PokedexViewState extends State<PokedexView> {
         ElevatedButton(
           child: const Text('Aceptar'),
           onPressed: () {
-            if (_formkey.currentState!.validate()) {
-              //context.read<UserBloc>().add(UpdateUser(User(username: newUser)));
-              // TODO: Agregar nuevo equipo
+            if (_formkey2.currentState!.validate()) {
+              print('Trying to add team $newTeamName');
+              context.read<TeamsBloc>().add(AddTeam(teamName: newTeamName));
+              newTeamName = '';
               Navigator.pop(context);
             }
           },
@@ -267,6 +269,7 @@ class _PokedexViewState extends State<PokedexView> {
           onPressed: () {
             if (_formkey.currentState!.validate()) {
               context.read<UserBloc>().add(UpdateUser(User(username: newUser)));
+              newUser = '';
               Navigator.pop(context);
             }
           },

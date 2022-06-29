@@ -17,8 +17,27 @@ class TeamsListView extends StatelessWidget {
           return ListView.builder(
             itemCount: state.teams.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(state.teams[index]),
+              return Dismissible(
+                key: Key(state.teams[index]),
+                onDismissed: (direction) {
+                  BlocProvider.of<TeamsBloc>(context).add(DeleteTeam(teamName: state.teams[index]));
+                },
+                direction: DismissDirection.startToEnd,
+                background: Container(
+                  color: Colors.red,
+                  child: const ListTile(
+                    title: Text('Delete', style: TextStyle(color: Colors.white)),
+                    leading: Icon(Icons.delete, color: Colors.white),
+                  ),
+                ),
+                child: ListTile(
+                  title: Text(state.teams[index]),
+                  leading: Icon(Icons.sports_esports),
+                  onTap: () {
+                    // TODO: go to team view
+                    //BlocProvider.of<SlectedTeamCubit>(context).selectTeam(state.teams[index]);
+                  },
+                ),
               );
             },
           );

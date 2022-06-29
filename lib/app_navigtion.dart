@@ -21,8 +21,10 @@ class _AppNavigatorState extends State<AppNavigator> {
         return Navigator(
           pages: [
             const MaterialPage(child: PokedexView()),
+            // if teamView and selectedTeam is not null goto team view
             if(pokemonID != null) const MaterialPage(child: PokemonDetailView())
           ],
+
           onPopPage: (route, result) {
             BlocProvider.of<NavCubit>(context).popToPokedex();
             return route.didPop(result);

@@ -156,12 +156,11 @@ class _PokedexViewState extends State<PokedexView> {
 
       floatingActionButton: BlocProvider.of<BottomNavCubit>(context).state == 0 ? FloatingActionButton(
         onPressed: () {
-          // TODO: add selected pokemons
           Team? teamState = BlocProvider.of<SlectedTeamCubit>(context).state;
           if (teamState == null){
             teamToAddpokemonsTo();
           } else {
-            print('saving team ${teamState.name}');
+            //print('saving team ${teamState.name}');
             // save pokemons
             BlocProvider.of<SlectedTeamCubit>(context).saveTeamChanges(BlocProvider.of<SlectedTeamCubit>(context).state!);
             BlocProvider.of<SlectedTeamCubit>(context).deselectTeam();
@@ -279,7 +278,7 @@ class _PokedexViewState extends State<PokedexView> {
           child: const Text('Aceptar'),
           onPressed: () {
             if (_formkey2.currentState!.validate()) {
-              print('Trying to add team $newTeamName');
+              //print('Trying to add team $newTeamName');
               context.read<TeamsBloc>().add(AddTeam(teamName: newTeamName));
               newTeamName = '';
               Navigator.pop(context);

@@ -11,19 +11,18 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   PokemonBloc() : super(PokemonInitial()) {
     on<PokemonPageRequest>(
       (event, emit) async {
-        if (event is PokemonPageRequest){
-          emit(PokemonLoading());
-          try {
-            final PokemonPageResponse pokemonPage = await PokemonRepository().getPokemonPage(event.page);
-            //final PokemonPageResponse pokemonPage = await PokemonRepository().getPokemonPage(0);
-            emit(PokemonLoaded(
-              pokemonListings: pokemonPage.pokemonListings,
-              canLoadNextPage: pokemonPage.canLoadNext,
-            ));
-          } catch (error) {
-            emit(PokemonLoadFailed(error: error.toString()));
-          }
+        emit(PokemonLoading());
+        try {
+          final PokemonPageResponse pokemonPage = await PokemonRepository().getPokemonPage(event.page);
+          //final PokemonPageResponse pokemonPage = await PokemonRepository().getPokemonPage(0);
+          emit(PokemonLoaded(
+            pokemonListings: pokemonPage.pokemonListings,
+            canLoadNextPage: pokemonPage.canLoadNext,
+          ));
+        } catch (error) {
+          emit(PokemonLoadFailed(error: error.toString()));
         }
+      
       }
     );
   }

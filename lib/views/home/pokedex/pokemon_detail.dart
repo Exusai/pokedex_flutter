@@ -8,7 +8,7 @@ import '../pokemon_color.dart';
 
 class PokemonDetailView extends StatelessWidget {
   //final Pokemon? pokemon;
-  PokemonDetailView();
+  const PokemonDetailView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

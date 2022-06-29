@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:pokedex_flutter/blocs/pokemon_detail_cubit.dart';
 
 class BottomNavCubit extends Cubit<int> {
 

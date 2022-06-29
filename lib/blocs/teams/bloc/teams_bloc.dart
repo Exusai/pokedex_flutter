@@ -23,5 +23,11 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
         }
       }
     );
+
+    on<DeleteTeam>(
+      (event, emit) async {
+        // TODO: Delete team from SharedPrefs
+      }
+    );
   }
 }

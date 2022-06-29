@@ -8,7 +8,6 @@ import 'package:pokedex_flutter/blocs/pokemon_detail_cubit.dart';
 import 'package:pokedex_flutter/blocs/teams/bloc/teams_bloc.dart';
 import 'package:pokedex_flutter/blocs/user/bloc/user_bloc.dart';
 import 'package:pokedex_flutter/views/auth/register.dart';
-import 'package:pokedex_flutter/views/home/pokedex/pokedex_view.dart';
 
 void main() {
   runApp(const MyApp());

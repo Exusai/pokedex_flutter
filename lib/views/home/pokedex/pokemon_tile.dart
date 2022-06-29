@@ -7,7 +7,7 @@ import '../pokemon_color.dart';
 class PokemonTile extends StatelessWidget {
   final PokemonListing pokemonListing;
   
-  PokemonTile({required this.pokemonListing});
+  const PokemonTile({Key? key, required this.pokemonListing}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

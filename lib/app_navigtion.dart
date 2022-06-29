@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex_flutter/blocs/nav_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokedex_flutter/views/home/pokedex/pokedex_view.dart';
+import 'package:pokedex_flutter/views/home/home.dart';
 import 'package:pokedex_flutter/views/home/pokedex/pokemon_detail.dart';
 
 
@@ -21,7 +21,7 @@ class _AppNavigatorState extends State<AppNavigator> {
         return Navigator(
           pages: [
             const MaterialPage(child: PokedexView()),
-            if(pokemonID != null) MaterialPage(child: PokemonDetailView())
+            if(pokemonID != null) const MaterialPage(child: PokemonDetailView())
           ],
           onPopPage: (route, result) {
             BlocProvider.of<NavCubit>(context).popToPokedex();

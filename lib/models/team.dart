@@ -10,19 +10,16 @@ class Team {
   
   void addPokemon(int id) {
     if (!isFull) {
-      IDs.add(id);
+      if (!IDs.contains(id)) IDs.add(id);
       if (IDs.length == 6) isFull = true;
       if (IDs.length < 6) isFull = false;
-      
     }
   }
 
   void removePokemon(int id) {
-    if (!isFull) {
-      IDs.remove(id);
-      if (IDs.length == 6) isFull = true;
-      if (IDs.length < 6) isFull = false;
-    }
+    IDs.remove(id);
+    if (IDs.length == 6) isFull = true;
+    if (IDs.length < 6) isFull = false;
   }
 
   static Future <Team> fromSharedPreferences(String name) async {
@@ -32,7 +29,7 @@ class Team {
     final prefs = await SharedPreferences.getInstance();
     final List<String>? pokemonIDs = prefs.getStringList(name);
 
-    if (pokemonIDs != null) {
+    if (pokemonIDs != null && pokemonIDs.isNotEmpty) {
       for (String id in pokemonIDs) {
         ids.add(int.parse(id));
       }

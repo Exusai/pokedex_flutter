@@ -3,13 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex_flutter/views/home/pokedex/pokemon_tile.dart';
 import '../../../blocs/bottom_nav_bar_cubit.dart';
 import '../../../blocs/pokemon/bloc/pokemon_bloc.dart';
+import '../../../blocs/selected_team_cubit.dart';
+import '../../../models/team.dart';
 import '../teams/team_list.dart';
 
-class PokedexGridView extends StatelessWidget {
-  const PokedexGridView({
-    Key? key,
+class PokedexGridView extends StatefulWidget {
+  Function superSetstate;
+
+  PokedexGridView({Key? key, 
+    required this.superSetstate,
   }) : super(key: key);
 
+  @override
+  State<PokedexGridView> createState() => _PokedexGridViewState();
+}
+
+class _PokedexGridViewState extends State<PokedexGridView> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BottomNavCubit, int>(
@@ -34,9 +43,35 @@ class PokedexGridView extends StatelessWidget {
                         childAspectRatio: 1.5,
                       ),
                       itemBuilder: (BuildContext context, int index) {
-                        //print(pokemonList[index].name);
-                        return PokemonTile(
-                            pokemonListing: state.pokemonListings[index]);
+                        return BlocBuilder<SlectedTeamCubit, Team?>(
+                          builder: (context, state2) {
+                            if (state2 == null){
+                              // if not seleting pokemon
+                              return PokemonTile(pokemonListing: state.pokemonListings[index], isSelected: false,);
+                            } else {
+                              List<int> selectedPokemons = state2.IDs;
+                              bool isSelected = selectedPokemons.contains(state.pokemonListings[index].id);
+                              return InkWell(
+                                onTap: (){
+                                  // if is already selected, deselect
+                                  if (isSelected){
+                                    BlocProvider.of<SlectedTeamCubit>(context).removePokemonFromTeam(state2, state.pokemonListings[index].id);
+                                    widget.superSetstate();
+                                    setState(() {});
+                                    
+                                  } else {
+                                    if (!state2.isFull){
+                                      BlocProvider.of<SlectedTeamCubit>(context).addPokemonToTeam(state2, state.pokemonListings[index].id);
+                                      widget.superSetstate();
+                                      setState(() {});
+                                    }
+                                  }
+                                },
+                                child: AbsorbPointer(child: PokemonTile(pokemonListing: state.pokemonListings[index], isSelected: isSelected,)),
+                              );
+                            }
+                          },
+                        );
                       }),
                 );
               } else if (state is PokemonLoadFailed) {
@@ -59,7 +94,6 @@ class PokedexGridView extends StatelessWidget {
             child: Text('Unknown state'),
           );
         }
-        
       },
     );
   }

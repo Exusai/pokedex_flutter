@@ -6,6 +6,7 @@ import 'package:pokedex_flutter/views/home/pokedex/pokedex_view.dart';
 import '../../../blocs/bottom_nav_bar_cubit.dart';
 import '../../../blocs/user/bloc/user_bloc.dart';
 import '../../blocs/selected_team_cubit.dart';
+import '../../models/team.dart';
 
 class PokedexView extends StatefulWidget {
   const PokedexView({Key? key}) : super(key: key);
@@ -20,14 +21,49 @@ class _PokedexViewState extends State<PokedexView> {
   String newUser = '';
   String newTeamName = '';
 
+  void superSetState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Pokedex'),
+        title: BlocBuilder<SlectedTeamCubit, Team?>(
+          builder: (context, state) {
+            if (state == null) {
+              return const Text('Flutter Pokedex');
+            } else {
+              if (state.isFull){
+                return const Text('Team Full');
+              } else {
+                return Text('${state.IDs.length}/6 seleccionados');
+              }
+            }
+          },
+        ),
+
+        actions: [
+          BlocBuilder<SlectedTeamCubit, Team?>(
+          builder: (context, state) {
+            if (state == null) {
+              return Container();
+            } else {
+              return IconButton(
+                onPressed: (){
+                  BlocProvider.of<SlectedTeamCubit>(context).deselectTeam();
+                  setState(() {});
+                }, 
+                icon: const Icon(Icons.clear),
+              );
+            }
+          },
+        ),
+        ],
         centerTitle: true,
         elevation: 0,
       ),
+
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
@@ -116,13 +152,25 @@ class _PokedexViewState extends State<PokedexView> {
         ),
       ),
       
-      body: const PokedexGridView(),
+      body: PokedexGridView(superSetstate: superSetState),
 
       floatingActionButton: BlocProvider.of<BottomNavCubit>(context).state == 0 ? FloatingActionButton(
         onPressed: () {
-          teamToAddpokemonsTo();
+          // TODO: add selected pokemons
+          Team? teamState = BlocProvider.of<SlectedTeamCubit>(context).state;
+          if (teamState == null){
+            teamToAddpokemonsTo();
+          } else {
+            print('saving team ${teamState.name}');
+            // save pokemons
+            BlocProvider.of<SlectedTeamCubit>(context).saveTeamChanges(BlocProvider.of<SlectedTeamCubit>(context).state!);
+            BlocProvider.of<SlectedTeamCubit>(context).deselectTeam();
+            setState(() {});
+          }
+
+          setState(() {});
         },
-        child: const Icon(Icons.add),
+        child: BlocProvider.of<SlectedTeamCubit>(context).state == null ? const Icon(Icons.edit) : const Icon(Icons.check),
       ): null,
 
       bottomNavigationBar: BottomNavigationBar(
@@ -166,6 +214,8 @@ class _PokedexViewState extends State<PokedexView> {
                 title: Text(team),
                 onTap: () {
                   BlocProvider.of<SlectedTeamCubit>(context).selectTeam(team);
+                  setState(() {});
+                  Navigator.pop(context);
                 },
               )).toList()
               );

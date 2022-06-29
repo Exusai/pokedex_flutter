@@ -5,6 +5,7 @@ import 'package:pokedex_flutter/blocs/bottom_nav_bar_cubit.dart';
 import 'package:pokedex_flutter/blocs/nav_cubit.dart';
 import 'package:pokedex_flutter/blocs/pokemon/bloc/pokemon_bloc.dart';
 import 'package:pokedex_flutter/blocs/pokemon_detail_cubit.dart';
+import 'package:pokedex_flutter/blocs/teams/bloc/teams_bloc.dart';
 import 'package:pokedex_flutter/blocs/user/bloc/user_bloc.dart';
 import 'package:pokedex_flutter/views/auth/register.dart';
 import 'package:pokedex_flutter/views/home/pokedex/pokedex_view.dart';
@@ -22,17 +23,12 @@ class MyApp extends StatelessWidget {
     final PokemonDetailsCubit pokemonDetailsCubit = PokemonDetailsCubit();
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => UserBloc()..add(LoadUser()),
-        ),
-        BlocProvider(
-          create: (context) => PokemonBloc()..add(PokemonPageRequest(page: 0)),
-        ),
-        BlocProvider(
-          create: (context) => NavCubit(pokemonDetailsCubit: pokemonDetailsCubit),
-        ),
+        BlocProvider(create: (context) => UserBloc()..add(LoadUser())),
+        BlocProvider(create: (context) => PokemonBloc()..add(PokemonPageRequest(page: 0))),
+        BlocProvider(create: (context) => NavCubit(pokemonDetailsCubit: pokemonDetailsCubit)),
         BlocProvider(create: (context) => pokemonDetailsCubit),
         BlocProvider(create: (context) => BottomNavCubit()),
+        BlocProvider(create: (context) => TeamsBloc()..add(LoadTeams())),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

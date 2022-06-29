@@ -15,7 +15,6 @@ class PokedexView extends StatefulWidget {
 class _PokedexViewState extends State<PokedexView> {
   final _formkey = GlobalKey<FormState>();
   String newUser = '';
-  int bootomBarIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +111,16 @@ class _PokedexViewState extends State<PokedexView> {
           ],
         ),
       ),
+      
       body: const PokedexGridView(),
+
+      floatingActionButton: BlocProvider.of<BottomNavCubit>(context).state == 0 ? FloatingActionButton(
+        onPressed: () {
+          teamToAddpokemonsTo();
+        },
+        child: const Icon(Icons.add),
+      ): null,
+
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -141,40 +149,129 @@ class _PokedexViewState extends State<PokedexView> {
     );
   }
 
-  Future usernameChangeDialog() => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Cambiar nombre de usuario'),
-          content: Form(
-            key: _formkey,
-            child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Nuevo nombre de usuario',
-              ),
-              validator: (val) =>
-                  val!.isEmpty ? 'Ingresar un nombre de usuario' : null,
-              onChanged: (value) {
-                newUser = value;
+  Future teamToAddpokemonsTo() async {
+    switch (await showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Seleccione un equipo para añadir nuevos pokemones'),
+          
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () { 
+
               },
+              child: const Text('Treasury department'),
             ),
-          ),
-          actions: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+
+              },
+              child: const Text('State department'),
+            ),
+            
             TextButton(
-              child: const Text('Cancelar'),
               onPressed: () {
-                Navigator.pop(context);
-              },
+                newTeam();
+              }, 
+              child: const Text('Nuevo equipo'),
             ),
-            ElevatedButton(
-              child: const Text('Aceptar'),
+
+            TextButton(
               onPressed: () {
-                if (_formkey.currentState!.validate()) {
-                  context.read<UserBloc>().add(UpdateUser(User(username: newUser)));
-                  Navigator.pop(context);
-                }
-              },
+                Navigator.pop(context, 0);
+              }, 
+              child: const Text('Cancelar')
             ),
           ],
+        );
+      }
+    )) {
+      case 0:
+        // Let's go.
+        // ...
+      break;
+      case 1:
+        // ...
+      break;
+      case null:
+        // dialog dismissed
+      break;
+    }
+  }
+
+  Future newTeam() => showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Nuevo equipo'),
+      content: Form(
+        key: _formkey,
+        child: TextFormField(
+          decoration: const InputDecoration(
+            labelText: 'Nombre del equipo',
+          ),
+          validator: (val) =>
+              val!.isEmpty ? 'Ingresar un nombre de equpo' : null,
+          onChanged: (value) {
+            newUser = value;
+          },
         ),
-      );
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Cancelar'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        ElevatedButton(
+          child: const Text('Aceptar'),
+          onPressed: () {
+            if (_formkey.currentState!.validate()) {
+              //context.read<UserBloc>().add(UpdateUser(User(username: newUser)));
+              // TODO: Agregar nuevo equipo
+              Navigator.pop(context);
+            }
+          },
+        ),
+      ],
+    ),
+  );
+
+  Future usernameChangeDialog() => showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Cambiar nombre de usuario'),
+      content: Form(
+        key: _formkey,
+        child: TextFormField(
+          decoration: const InputDecoration(
+            labelText: 'Nuevo nombre de usuario',
+          ),
+          validator: (val) =>
+              val!.isEmpty ? 'Ingresar un nombre de usuario' : null,
+          onChanged: (value) {
+            newUser = value;
+          },
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Cancelar'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        ElevatedButton(
+          child: const Text('Aceptar'),
+          onPressed: () {
+            if (_formkey.currentState!.validate()) {
+              context.read<UserBloc>().add(UpdateUser(User(username: newUser)));
+              Navigator.pop(context);
+            }
+          },
+        ),
+      ],
+    ),
+  );
 }

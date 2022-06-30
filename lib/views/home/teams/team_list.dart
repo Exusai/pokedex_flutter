@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex_flutter/views/home/teams/team_view.dart';
+import '../../../blocs/selected_team_cubit.dart';
 import '../../../blocs/teams/bloc/teams_bloc.dart';
 
 class TeamsListView extends StatelessWidget {
@@ -32,10 +34,15 @@ class TeamsListView extends StatelessWidget {
                 ),
                 child: ListTile(
                   title: Text(state.teams[index]),
-                  leading: Icon(Icons.sports_esports),
+                  leading: const Icon(Icons.sports_esports),
                   onTap: () {
-                    // TODO: go to team view
-                    //BlocProvider.of<SlectedTeamCubit>(context).selectTeam(state.teams[index]);
+                    // Cambia el estado del cubit para que se seleccione el team
+                    BlocProvider.of<SlectedTeamCubit>(context).selectTeam(state.teams[index]);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => TeamView(teamName: state.teams[index]),
+                      ),
+                    );
                   },
                 ),
               );

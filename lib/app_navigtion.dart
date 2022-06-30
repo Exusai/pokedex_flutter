@@ -3,6 +3,10 @@ import 'package:pokedex_flutter/blocs/nav_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex_flutter/views/home/home.dart';
 import 'package:pokedex_flutter/views/home/pokedex/pokemon_detail.dart';
+import 'package:pokedex_flutter/views/home/teams/team_view.dart';
+
+import 'blocs/selected_team_cubit.dart';
+import 'models/team.dart';
 
 
 class AppNavigator extends StatefulWidget {
@@ -21,8 +25,7 @@ class _AppNavigatorState extends State<AppNavigator> {
         return Navigator(
           pages: [
             const MaterialPage(child: PokedexView()),
-            // if teamView and selectedTeam is not null goto team view
-            if(pokemonID != null) const MaterialPage(child: PokemonDetailView())
+            if(pokemonID != null) const MaterialPage(child: PokemonDetailView()),            
           ],
 
           onPopPage: (route, result) {

@@ -44,7 +44,7 @@ class _PokemonTileState extends State<PokemonTile> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 10),
 
                             Container(
                               width: 70,

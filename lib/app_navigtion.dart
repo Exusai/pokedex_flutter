@@ -29,7 +29,7 @@ class _AppNavigatorState extends State<AppNavigator> {
           ],
 
           onPopPage: (route, result) {
-            BlocProvider.of<NavCubit>(context).popToPokedex();
+            //BlocProvider.of<NavCubit>(context).popToPokedex();
             return route.didPop(result);
           },
           observers: [heroC],

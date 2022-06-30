@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokedex_flutter/models/pokemon_response.dart';
 import 'package:pokedex_flutter/models/team.dart';
 import '../../../blocs/pokemon/bloc/pokemon_bloc.dart';
 import '../../../blocs/selected_team_cubit.dart';
